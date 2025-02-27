@@ -24,17 +24,26 @@ jobs:
       - name: Install dependencies
         run: go mod download
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          format: "cyclonedx"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
+          output: "bin/sbom.cdx.json"
+
       - name: Lint
         run: |
           go vet ./...
-          if command -v golangci-lint > /dev/null; then
-            golangci-lint run
-          else
-            echo "golangci-lint not installed"
-          fi
+          golangci-lint run
 
       - name: Test
-        run: go test -v ./...
+        run: |
+          go test -v ./... -coverprofile=coverage.out
+          go tool cover -func=coverage.out
 
       - name: Build
         run: |
@@ -48,6 +57,7 @@ jobs:
           path: |
             bin/taxonomist
             bin/taxonomist.sha256
+            bin/sbom.cdx.json
 
   release:
     runs-on: ubuntu-latest

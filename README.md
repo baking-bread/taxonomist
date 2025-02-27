@@ -76,7 +76,21 @@ make linux    # Build for Linux
 make darwin   # Build for macOS
 ```
 
-## Security Verification
+## Security
+
+### Vulnerability Scanning
+
+The project uses Trivy for vulnerability scanning:
+
+```bash
+# Run security scan locally
+make scan
+
+# Or run directly with Trivy
+trivy fs --security-checks vuln,config .
+```
+
+### Binary Verification
 
 Each release includes SHA256 hash files for binary verification:
 

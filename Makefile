@@ -11,31 +11,24 @@ ifeq ($(OS),Windows_NT)
     RM_CMD=del /F /Q
     RM_DIR=rd /S /Q
     BINARY_PATH=bin\$(BINARY_NAME)$(BINARY_SUFFIX)
+	CHECK_CMD=where
+	ECHO_NULL=>nul 2>nul
 else
     BINARY_SUFFIX=
     RM_CMD=rm -f
     RM_DIR=rm -rf
     BINARY_PATH=bin/$(BINARY_NAME)$(BINARY_SUFFIX)
+	CHECK_CMD=which
+	ECHO_NULL=>/dev/null 2>&1
 endif
 
-.PHONY: all build test clean lint deps windows linux darwin security
+.PHONY: all test build lint security clean
 
-all: deps lint test build
+all: build lint test scan
 
-build: security
-
-# Cross-compilation targets with security
-windows:
-	GOOS=windows GOARCH=$(GOARCH) go build -o bin/$(BINARY_NAME).exe main.go
-	cd bin && $(HASH_CMD) $(BINARY_NAME).exe > $(BINARY_NAME).exe.sha256
-
-linux:
-	GOOS=linux GOARCH=$(GOARCH) go build -o bin/$(BINARY_NAME) main.go
-	cd bin && $(HASH_CMD) $(BINARY_NAME) > $(BINARY_NAME).sha256
-
-darwin:
-	GOOS=darwin GOARCH=$(GOARCH) go build -o bin/$(BINARY_NAME) main.go
-	cd bin && $(HASH_CMD) $(BINARY_NAME) > $(BINARY_NAME).sha256
+build:
+	go build -o bin/$(BINARY_NAME)$(BINARY_SUFFIX) main.go
+	cd bin && $(HASH_CMD) $(BINARY_NAME)$(BINARY_SUFFIX) > $(BINARY_NAME)$(BINARY_SUFFIX).sha256
 
 test:
 	go test -v ./...
@@ -47,27 +40,8 @@ clean:
 
 lint:
 	go vet ./...
-ifeq ($(OS),Windows_NT)
-	@where golangci-lint >nul 2>nul && (\
-		golangci-lint run \
-	) || (\
-		echo golangci-lint not installed \
-	)
-else
-	@which golangci-lint >/dev/null 2>&1 && (\
-		golangci-lint run \
-	) || (\
-		echo "golangci-lint not installed" \
-	)
-endif
+	$(CHECK_CMD) golangci-lint $(ECHO_NULL) && golangci-lint run || echo "golangci-lint not installed"
 
-# New security target
-security: $(BINARY_PATH)
-	cd bin && $(HASH_CMD) $(BINARY_NAME)$(BINARY_SUFFIX) > $(BINARY_NAME)$(BINARY_SUFFIX).sha256
-
-deps:
-	go mod download
-	go mod tidy
-
-# CI pipeline target that runs everything in sequence
-ci: deps lint test build
+scan:
+	$(CHECK_CMD) gosec $(ECHO_NULL) && gosec -no-fail -terse -fmt=sonarqube -out=./bin/sonarqube.gosec.json ./... || echo "gosec not installed"
+	$(CHECK_CMD) trivy $(ECHO_NULL) && trivy fs --format cyclonedx --output ./bin/sbom.cdx.json --scanners vuln . || echo "Trivy not installed"

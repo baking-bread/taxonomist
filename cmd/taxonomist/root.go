@@ -27,9 +27,23 @@ var BaseCmd = &cobra.Command{
 	Short: "A Name-Generator CLI Tool",
 	Long:  "Taxonomy: A simple name generator tool that can name whatever you can think of",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		cfg, err := config.LoadConfig(configPath)
-		if err != nil {
-			return fmt.Errorf("failed to load config: %w", err)
+		var cfg *config.Config
+		var err error
+
+		if configPath != "" {
+			cfg, err = config.LoadConfig(configPath)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Warning: Failed to load config from %s: %v\n", configPath, err)
+				fmt.Fprintf(os.Stderr, "Using default configuration...\n")
+				cfg = config.GetDefaultConfig()
+			}
+		} else {
+			cfg = config.GetDefaultConfig()
+		}
+
+		// Validate config has required data
+		if len(cfg.Adjectives) == 0 || len(cfg.Nouns) == 0 {
+			return fmt.Errorf("invalid configuration: must have at least one adjective and one noun")
 		}
 
 		for i := 0; i < count; i++ {
@@ -67,7 +81,7 @@ var BaseCmd = &cobra.Command{
 }
 
 func Execute() error {
-	BaseCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "config.yaml", "Path to the configuration file")
+	BaseCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "Path to the configuration file (optional)")
 	BaseCmd.PersistentFlags().IntVarP(&count, "count", "n", 1, "Number of names to generate")
 	BaseCmd.PersistentFlags().StringVarP(&prefix, "prefix", "p", "", "Prefix to add to generated names")
 	BaseCmd.PersistentFlags().StringVarP(&sufix, "sufix", "s", "", "sufix to add to generated names")

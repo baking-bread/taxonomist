@@ -10,11 +10,9 @@ import (
 )
 
 type Config struct {
-	Dictionary struct {
-		Adjectives []string `yaml:"adjectives"`
-		Nouns      []string `yaml:"nouns"`
-	} `yaml:"dictionary"`
-	mu sync.RWMutex
+	Adjectives []string `yaml:"adjectives"`
+	Nouns      []string `yaml:"nouns"`
+	mu         sync.RWMutex
 }
 
 func LoadConfig(filename string) (*Config, error) {
@@ -40,10 +38,10 @@ func LoadConfig(filename string) (*Config, error) {
 }
 
 func (c *Config) validate() error {
-	if len(c.Dictionary.Adjectives) == 0 {
+	if len(c.Adjectives) == 0 {
 		return fmt.Errorf("adjectives list is empty")
 	}
-	if len(c.Dictionary.Nouns) == 0 {
+	if len(c.Nouns) == 0 {
 		return fmt.Errorf("nouns list is empty")
 	}
 	return nil
@@ -53,12 +51,12 @@ func (c *Config) GetRandomNoun() string {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	return c.Dictionary.Nouns[random.Random(len(c.Dictionary.Nouns))]
+	return c.Nouns[random.Random(len(c.Nouns))]
 }
 
 func (c *Config) GetRandomAdjective() string {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
-	return c.Dictionary.Adjectives[random.Random(len(c.Dictionary.Adjectives))]
+	return c.Adjectives[random.Random(len(c.Adjectives))]
 }

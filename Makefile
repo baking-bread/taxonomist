@@ -43,5 +43,5 @@ lint:
 	$(CHECK_CMD) golangci-lint $(ECHO_NULL) && golangci-lint run || echo "golangci-lint not installed"
 
 scan:
-	$(CHECK_CMD) gosec $(ECHO_NULL) && gosec -no-fail -terse -fmt=sonarqube -out=./bin/sonarqube.gosec.json ./... || echo "gosec not installed"
-	$(CHECK_CMD) trivy $(ECHO_NULL) && trivy fs --format cyclonedx --output ./bin/sbom.cdx.json --scanners vuln . || echo "Trivy not installed"
+	$(CHECK_CMD) gosec $(ECHO_NULL) && gosec -no-fail -terse -out=./bin/sonarqube.gosec.json ./... || echo "gosec not installed"
+	$(CHECK_CMD) trivy $(ECHO_NULL) && trivy fs --scanners vuln . || echo "Trivy not installed"

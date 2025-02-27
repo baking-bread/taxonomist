@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [v1.1.0] 27.02.2025
+
+### Updated
+
+- Makes configs optional and provides default names
+
+## [v1.0.0] 27.02.2025
 
 ### Added
 

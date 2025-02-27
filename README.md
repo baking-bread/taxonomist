@@ -48,12 +48,11 @@ taxonomist -c custom.yaml   # Uses custom dictionary
 Default configuration can be overridden using a YAML file:
 
 ```yaml
-dictionary:
-  adjectives:
-    - custom
-    - words
-  nouns:
-    - here
+adjectives:
+  - custom
+  - words
+nouns:
+  - here
 ```
 
 ## Building from Source
@@ -70,14 +69,6 @@ make test    # Run tests
 make lint    # Run linters
 ```
 
-Cross-platform builds:
-
-```bash
-make windows  # Build for Windows
-make linux    # Build for Linux
-make darwin   # Build for macOS
-```
-
 ## Security
 
 ### Vulnerability Scanning
@@ -89,7 +80,7 @@ The project uses Trivy for vulnerability scanning:
 make scan
 
 # Or run directly with Trivy
-trivy fs --security-checks vuln,config .
+trivy fs --scanners vuln .
 ```
 
 ### Binary Verification
@@ -110,4 +101,8 @@ Perfect for GitOps and infrastructure as code:
 
 ```bash
 taxonomist -n 1 -p prod -f kebab > resource-name.txt
+```
+
+```bash
+docker tag my-image:latest my-image:$(taxonomist -n 1 -p dev -f kebab)
 ```

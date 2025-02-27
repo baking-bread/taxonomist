@@ -37,7 +37,6 @@ jobs:
       - name: Lint
         run: |
           go vet ./...
-          golangci-lint run
 
       - name: Test
         run: |

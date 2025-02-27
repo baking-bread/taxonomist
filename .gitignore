@@ -37,6 +37,3 @@ go.work
 
 # Environment variables
 .env
-
-# Dependency management files
-go.sum

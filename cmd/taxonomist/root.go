@@ -16,7 +16,7 @@ var (
 	configPath string
 	count      int
 	prefix     string
-	postfix    string
+	sufix      string
 	separator  string
 	adjCount   int
 	format     string
@@ -57,8 +57,8 @@ var BaseCmd = &cobra.Command{
 			if prefix != "" {
 				name = prefix + separator + name
 			}
-			if postfix != "" {
-				name = name + separator + postfix
+			if sufix != "" {
+				name = name + separator + sufix
 			}
 			fmt.Println(name)
 		}
@@ -70,8 +70,8 @@ func Execute() error {
 	BaseCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "config.yaml", "Path to the configuration file")
 	BaseCmd.PersistentFlags().IntVarP(&count, "count", "n", 1, "Number of names to generate")
 	BaseCmd.PersistentFlags().StringVarP(&prefix, "prefix", "p", "", "Prefix to add to generated names")
-	BaseCmd.PersistentFlags().StringVarP(&postfix, "postfix", "s", "", "Postfix to add to generated names")
-	BaseCmd.PersistentFlags().StringVarP(&separator, "separator", "e", "-", "Separator to use between prefix, generated name, and postfix")
+	BaseCmd.PersistentFlags().StringVarP(&sufix, "sufix", "s", "", "sufix to add to generated names")
+	BaseCmd.PersistentFlags().StringVarP(&separator, "separator", "e", "-", "Separator to use between prefix, generated name, and sufix")
 	BaseCmd.PersistentFlags().IntVarP(&adjCount, "adjectives", "a", 1, "Number of adjectives to use in the name")
 	BaseCmd.PersistentFlags().StringVarP(&format, "format", "f", "kebab", "Output format (kebab, camel, snake)")
 

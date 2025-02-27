@@ -10,7 +10,7 @@
   - `-c, --config`: Specify configuration file path
   - `-n, --count`: Number of names to generate
   - `-p, --prefix`: Add prefix to generated names
-  - `-s, --postfix`: Add postfix to generated names
+  - `-s, --sufix`: Add sufix to generated names
   - `-e, --separator`: Customize word separator (default: "-")
   - `-a, --adjectives`: Number of adjectives to use (default: 1)
   - `-f, --format`: Output format selection

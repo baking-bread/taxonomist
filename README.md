@@ -6,7 +6,7 @@ A powerful CLI tool for generating consistent, memorable names for your resource
 
 - Generate consistent, memorable names
 - Multiple output formats (kebab, camel, snake case)
-- Customizable with prefixes and postfixes
+- Customizable with prefixes and sufixes
 - Cross-platform support (Windows, Linux, macOS)
 - Configurable through YAML
 - Perfect for CI/CD pipelines
@@ -36,7 +36,7 @@ taxonomist -a 2        # Uses 2 adjectives
 Advanced options:
 
 ```bash
-taxonomist -p dev -s prod    # Adds prefix and postfix
+taxonomist -p dev -s prod    # Adds prefix and sufix
 taxonomist -f camel         # Uses camelCase format
 taxonomist -c custom.yaml   # Uses custom dictionary
 ```

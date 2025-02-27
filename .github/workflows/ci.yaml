@@ -32,7 +32,7 @@ jobs:
           exit-code: "1"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
-          output: "bin/sbom.cdx.json"
+          output: "sbom.cdx.json"
 
       - name: Lint
         run: |
@@ -43,6 +43,13 @@ jobs:
         run: |
           go test -v ./... -coverprofile=coverage.out
           go tool cover -func=coverage.out
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: |
+            sbom.cdx.json
 
   build:
     needs: test

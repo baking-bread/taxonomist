@@ -1,5 +1,9 @@
 BINARY_NAME=taxonomist
 GOARCH=amd64
+HASH_CMD=sha256sum
+ifeq ($(OS),Windows_NT)
+    HASH_CMD=certutil -hashfile
+endif
 
 # OS specific variables
 ifeq ($(OS),Windows_NT)
@@ -14,22 +18,24 @@ else
     BINARY_PATH=bin/$(BINARY_NAME)$(BINARY_SUFFIX)
 endif
 
-.PHONY: all build test clean lint deps windows linux darwin
+.PHONY: all build test clean lint deps windows linux darwin security
 
 all: deps lint test build
 
-build:
-	go build -o $(BINARY_PATH) main.go
+build: security
 
-# Cross-compilation targets
+# Cross-compilation targets with security
 windows:
 	GOOS=windows GOARCH=$(GOARCH) go build -o bin/$(BINARY_NAME).exe main.go
+	cd bin && $(HASH_CMD) $(BINARY_NAME).exe > $(BINARY_NAME).exe.sha256
 
 linux:
 	GOOS=linux GOARCH=$(GOARCH) go build -o bin/$(BINARY_NAME) main.go
+	cd bin && $(HASH_CMD) $(BINARY_NAME) > $(BINARY_NAME).sha256
 
 darwin:
 	GOOS=darwin GOARCH=$(GOARCH) go build -o bin/$(BINARY_NAME) main.go
+	cd bin && $(HASH_CMD) $(BINARY_NAME) > $(BINARY_NAME).sha256
 
 test:
 	go test -v ./...
@@ -37,6 +43,7 @@ test:
 clean:
 	go clean
 	$(RM_DIR) bin
+	$(RM_CMD) *.sha256
 
 lint:
 	go vet ./...
@@ -53,6 +60,10 @@ else
 		echo "golangci-lint not installed" \
 	)
 endif
+
+# New security target
+security: $(BINARY_PATH)
+	cd bin && $(HASH_CMD) $(BINARY_NAME)$(BINARY_SUFFIX) > $(BINARY_NAME)$(BINARY_SUFFIX).sha256
 
 deps:
 	go mod download

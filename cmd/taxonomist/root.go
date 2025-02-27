@@ -23,7 +23,7 @@ var (
 )
 
 var BaseCmd = &cobra.Command{
-	Use:   "taxo",
+	Use:   "taxonomist",
 	Short: "A Name-Generator CLI Tool",
 	Long:  "Taxonomy: A simple name generator tool that can name whatever you can think of",
 	RunE: func(cmd *cobra.Command, args []string) error {

@@ -5,7 +5,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/baking-bread/taxonomist/pkg/random"
+	"github.com/baking-bread/taxonomist/internal/random"
 	"gopkg.in/yaml.v3"
 )
 

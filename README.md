@@ -1,8 +1,8 @@
 # Taxonomist
 
-[![CI](https://github.com/baking-bread/taxonomist/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/baking-bread/taxonomist/actions/workflows/ci.yaml)
+[![Build](https://github.com/baking-bread/taxonomist/actions/workflows/default.yaml/badge.svg?branch=main)](https://github.com/baking-bread/taxonomist/actions/workflows/default.yaml)
 
-A powerful CLI tool for generating consistent, memorable names for your resources, perfect for cloud infrastructure, development environments, or any naming needs.
+A simple CLI tool for generating consistent, memorable names for your resources, perfect for cloud infrastructure, development environments, or any naming needs.
 
 ## Features
 

@@ -9,26 +9,34 @@ on:
   pull_request:
     branches:
       - main
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   test:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     uses: baking-bread/flows/.github/workflows/golang-test.yaml@main
     with:
       golang_version: "1.22.2"
   scan:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     uses: baking-bread/flows/.github/workflows/golang-scan.yaml@main
     with:
       golang_version: "1.22.2"
   build:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
     needs: test
     uses: baking-bread/flows/.github/workflows/golang-build.yaml@main
     with:
       golang_version: "1.22.2"
       executable_name: "taxonomist"
+  merge:
+    if: github.event_name == 'merge_group'
+    uses: baking-bread/flows/.github/workflows/golang-merge.yaml@main
   release:
     needs: build
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     uses: baking-bread/flows/.github/workflows/golang-release.yaml@main
     with:
       golang_version: "1.22.2"
-      artifact_run_id: ${{ github.run_id }}
+      artifact_run_id: ${{ needs.build.outputs.workflow_run_id}}

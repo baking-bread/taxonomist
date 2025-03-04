@@ -10,7 +10,7 @@ A simple CLI tool for generating consistent, memorable names for your resources,
 - Multiple output formats (kebab, camel, snake case)
 - Customizable with prefixes and sufixes
 - Cross-platform support (Windows, Linux, macOS)
-- Configurable through YAML
+- Configurable through YAML (Provide your own words)
 - Perfect for CI/CD pipelines
 
 ## Installation
@@ -30,17 +30,25 @@ make build
 Basic usage:
 
 ```bash
-taxonomist              # Generates a single name
+taxonomist             # Generates a single name
 taxonomist -n 5        # Generates 5 names
 taxonomist -a 2        # Uses 2 adjectives
+
+
 ```
 
-Advanced options:
+Supported Flags
 
 ```bash
-taxonomist -p dev -s prod    # Adds prefix and sufix
-taxonomist -f camel         # Uses camelCase format
-taxonomist -c custom.yaml   # Uses custom dictionary
+  -a, --adjectives int     Number of adjectives to use in the name (default 1)
+  -c, --config string      Path to the configuration file (optional)
+  -n, --count int          Number of names to generate (default 1)
+  -d, --debug              Enable debug logging
+  -f, --format string      Output format (kebab, camel, snake) (default "kebab")
+  -h, --help               help for taxonomist
+  -p, --prefix string      Prefix to add to generated names
+  -e, --separator string   Separator to use between prefix, generated name, and sufix (default "-")
+  -s, --sufix string       sufix to add to generated names
 ```
 
 ### Configuration
@@ -53,56 +61,4 @@ adjectives:
   - words
 nouns:
   - here
-```
-
-## Building from Source
-
-Requirements:
-
-- Go 1.22 or higher
-- Make
-
-```bash
-make deps    # Install dependencies
-make build   # Build for current platform
-make test    # Run tests
-make lint    # Run linters
-```
-
-## Security
-
-### Vulnerability Scanning
-
-The project uses Trivy for vulnerability scanning:
-
-```bash
-# Run security scan locally
-make scan
-
-# Or run directly with Trivy
-trivy fs --scanners vuln .
-```
-
-### Binary Verification
-
-Each release includes SHA256 hash files for binary verification:
-
-```bash
-# Verify on Linux/MacOS
-sha256sum -c taxonomist.sha256
-
-# Verify on Windows
-certutil -hashfile taxonomist.exe | findstr /i /c:"$(type taxonomist.exe.sha256)"
-```
-
-## CI/CD Integration
-
-Perfect for GitOps and infrastructure as code:
-
-```bash
-taxonomist -n 1 -p prod -f kebab > resource-name.txt
-```
-
-```bash
-docker tag my-image:latest my-image:$(taxonomist -n 1 -p dev -f kebab)
 ```

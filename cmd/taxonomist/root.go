@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/baking-bread/taxonomist/internal/config"
+	config "github.com/baking-bread/taxonomist/internal"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
@@ -45,7 +45,6 @@ var BaseCmd = &cobra.Command{
 	Long:  "Taxonomy: A simple name generator tool that can name whatever you can think of",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		initLogger()
-		log.Debug("Initialized logger")
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var cfg *config.Config

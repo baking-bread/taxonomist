@@ -3,6 +3,7 @@ GOARCH=amd64
 HASH_CMD=sha256sum
 ifeq ($(OS),Windows_NT)
     HASH_CMD=certutil -hashfile
+	HASH_ALGORITHM=sha256
 endif
 
 # OS specific variables
@@ -22,13 +23,15 @@ else
 	ECHO_NULL=>/dev/null 2>&1
 endif
 
+
+
 .PHONY: all test build lint security clean
 
 all: build lint test scan
 
 build:
 	go build -o bin/$(BINARY_NAME)$(BINARY_SUFFIX) main.go
-	cd bin && $(HASH_CMD) $(BINARY_NAME)$(BINARY_SUFFIX) > $(BINARY_NAME)$(BINARY_SUFFIX).sha256
+	cd bin && $(HASH_CMD) $(BINARY_NAME)$(BINARY_SUFFIX) $(HASH_ALGORITHM) > $(BINARY_NAME)$(BINARY_SUFFIX).sha256
 
 test:
 	go test -v ./...

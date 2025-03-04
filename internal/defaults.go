@@ -1,4 +1,4 @@
-package config
+package internal
 
 var DefaultConfig = Config{
 	Adjectives: []string{
@@ -112,7 +112,6 @@ var DefaultConfig = Config{
 	},
 }
 
-// GetDefaultConfig returns a copy of the default configuration
 func GetDefaultConfig() *Config {
 	return &DefaultConfig
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Updated
+
+- Simplified project structure
+- Simplified documentation
+
 ## [v1.1.0] 27.02.2025
 
 ### Updated

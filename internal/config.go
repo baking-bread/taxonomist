@@ -1,18 +1,15 @@
-package config
+package internal
 
 import (
 	"fmt"
 	"os"
-	"sync"
 
-	"github.com/baking-bread/taxonomist/internal/random"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
 	Adjectives []string `yaml:"adjectives"`
 	Nouns      []string `yaml:"nouns"`
-	mu         sync.RWMutex
 }
 
 func LoadConfig(filename string) (*Config, error) {
@@ -48,15 +45,9 @@ func (c *Config) validate() error {
 }
 
 func (c *Config) GetRandomNoun() string {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	return c.Nouns[random.Random(len(c.Nouns))]
+	return c.Nouns[Random(len(c.Nouns))]
 }
 
 func (c *Config) GetRandomAdjective() string {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	return c.Adjectives[random.Random(len(c.Adjectives))]
+	return c.Adjectives[Random(len(c.Adjectives))]
 }

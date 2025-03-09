@@ -3,23 +3,17 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	config "github.com/baking-bread/taxonomist/internal"
+	"github.com/baking-bread/taxonomist/pkg/generator"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 )
 
 var (
 	configPath string
-	count      int
 	prefix     string
-	sufix      string
-	separator  string
-	adjCount   int
+	suffix     string
 	format     string
 	debug      bool
 	log        *logrus.Logger
@@ -69,62 +63,24 @@ var BaseCmd = &cobra.Command{
 		}
 
 		log.WithFields(logrus.Fields{
-			"count":     count,
-			"adj_count": adjCount,
-			"format":    format,
-			"prefix":    prefix,
-			"suffix":    sufix,
-			"separator": separator,
+			"format": format,
+			"prefix": prefix,
+			"suffix": suffix,
 		}).Debug("Starting name generation")
 
-		for i := 0; i < count; i++ {
-			adjectives := make([]string, adjCount)
-			for j := 0; j < adjCount; j++ {
-				adjectives[j] = cfg.GetRandomAdjective()
-			}
+		gen := generator.NewNameGenerator(cfg.Adjectives, cfg.Nouns)
 
-			var name string
-			switch format {
-			case "kebab":
-				name = strings.Join(append(adjectives, cfg.GetRandomNoun()), separator)
-			case "camel":
-				parts := append(adjectives, cfg.GetRandomNoun())
-				for i := range parts {
-					if i > 0 {
-						parts[i] = cases.Title(language.English).String(parts[i])
-					}
-				}
-				name = strings.Join(parts, "")
-			case "snake":
-				name = strings.Join(append(adjectives, cfg.GetRandomNoun()), "_")
-			}
+		fmt.Print(gen.GenerateName(format, prefix, suffix))
 
-			if prefix != "" {
-				name = prefix + separator + name
-			}
-			if sufix != "" {
-				name = name + separator + sufix
-			}
-
-			log.WithFields(logrus.Fields{
-				"iteration": i + 1,
-				"name":      name,
-			}).Debug("Generated name")
-
-			fmt.Println(name)
-		}
 		return nil
 	},
 }
 
 func Execute() error {
 	BaseCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "", "Path to the configuration file (optional)")
-	BaseCmd.PersistentFlags().IntVarP(&count, "count", "n", 1, "Number of names to generate")
 	BaseCmd.PersistentFlags().StringVarP(&prefix, "prefix", "p", "", "Prefix to add to generated names")
-	BaseCmd.PersistentFlags().StringVarP(&sufix, "sufix", "s", "", "sufix to add to generated names")
-	BaseCmd.PersistentFlags().StringVarP(&separator, "separator", "e", "-", "Separator to use between prefix, generated name, and sufix")
-	BaseCmd.PersistentFlags().IntVarP(&adjCount, "adjectives", "a", 1, "Number of adjectives to use in the name")
-	BaseCmd.PersistentFlags().StringVarP(&format, "format", "f", "kebab", "Output format (kebab, camel, snake)")
+	BaseCmd.PersistentFlags().StringVarP(&suffix, "suffix", "s", "", "suffix to add to generated names")
+	BaseCmd.PersistentFlags().StringVarP(&format, "format", "f", "kebab", "Output format (kebab, camel, snake, pascal, uper, cobol)")
 	BaseCmd.PersistentFlags().BoolVarP(&debug, "debug", "d", false, "Enable debug logging")
 
 	if envConfig := os.Getenv("CONFIG_FILE"); envConfig != "" {

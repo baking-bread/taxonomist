@@ -43,11 +43,3 @@ func (c *Config) validate() error {
 	}
 	return nil
 }
-
-func (c *Config) GetRandomNoun() string {
-	return c.Nouns[Random(len(c.Nouns))]
-}
-
-func (c *Config) GetRandomAdjective() string {
-	return c.Adjectives[Random(len(c.Adjectives))]
-}
